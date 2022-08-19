@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "zen"
+version = "0.1.0"
+description = ""
+authors = ["michael <michaelutoh21@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.79.0"
+uvicorn = "^0.18.2"
+celery = "^5.2.7"
+redis = "^4.3.4"
+flower = "^1.2.0"
+black = "^22.6.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
