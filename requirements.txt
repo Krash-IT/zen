@@ -1,5 +1,13 @@
+aiofiles
+bcrypt
 celery
+email-validator
 fastapi
 flower
+passlib
+psycopg2
+python-dotenv
 redis
+python-multipart
+sqlalchemy
 uvicorn

@@ -1,22 +1,43 @@
-from celery import Celery
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
-app = FastAPI()
+from core.config import settings
+from core.database import Base
+from core.database import engine
+from core.routers import auth, product, shop
 
-celery = Celery(
-    __name__,
-    broker="redis://127.0.0.1:6379/0",
-    backend="redis://127.0.0.1:6379/0"
+router_list = [auth.router, product.router, shop.router]
+origins = [
+    "http://127.0.0.1:1234",
+    "http://localhost:1234",
+    "http://127.0.0.1:3000",
+    "http://localhost:3000",
+]
+
+
+def configure_static(app):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+def create_tables():
+    Base.metadata.create_all(bind=engine)
+
+
+def start_application():
+    app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
+    [app.include_router(router) for router in router_list]
+    configure_static(app)
+    create_tables()
+    return app
+
+
+app = start_application()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@celery.task
-def divide(x, y):
-    import time
-    time.sleep(5)
-    return x / y
