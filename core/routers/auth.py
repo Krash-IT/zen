@@ -42,3 +42,9 @@ def register(data: RegisterUserSchema, db: Session = Depends(get_db)):
     access_token = create_access_token(data={"sub": user.email})
     data = {"email": user.email, "access_token": access_token, "token_type": "bearer"}
     return data
+
+
+@router.post("/users/{pk}", response_model=UserDetailSchema)
+def users(pk: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == pk).first()
+    return user
